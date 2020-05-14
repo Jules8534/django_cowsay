@@ -1,35 +1,31 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from cowsmoo.models import CowsMooText
+
 from cowsmoo.forms import MooText
 import subprocess
 
 
 def index(request):
+    output = None
     if request.method == 'POST':
         form = MooText(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            form = MooText()
-            cowsmoo_text = subprocess.run(
-                ['cowsay', data['text']], capture_output=True
-            ).stdout.decode()
-            CowsMooText.objects.create(
+            CowsMooText.objects.create( 
                 text=data['text']
             )
-
-        return render(request, 'index.html',
-        {'cowsmoo_text': cowsmoo_text, 'form': form })
+            cmd = data['text']
+            output = subprocess.run(['cowsay', cmd], capture_output=True)
+            return render(request, 'index.html', {'form': MooText(),'output': output.stdout.decode()})
     form = MooText()
     return render(request, 'index.html', {'form': form})
 
 
-def history_view(request):
-    text_history = list(CowsMooText.objects.all())
-    recent_history = text_history[-10:][::-1]
-
-
-    return render(request, 'history.html', {'recent_history': recent_history})
+def history(request):
+    text_history = CowsMooText.objects.all().order_by('-id')[:10]
+    # recent_history = text_history[-10:][::-1]
+    return render(request, 'history.html', {'text_history': text_history})
 
     
 

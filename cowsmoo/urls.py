@@ -20,7 +20,7 @@ from cowsmoo import views
 
 urlpatterns = [
     path('', views.index, name='homepage'),
-    path('history/', views.history_view),
+    path('history/', views.history),
     
 ]
 

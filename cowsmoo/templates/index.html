@@ -7,9 +7,14 @@
     <input type="submit" value="Submit">
 </form>
 <a href='/history'>
-    <button>10 Most Recent Cowsays</button>
+    <button>Most Recent Cowsays</button>
 </a>
 
 <pre> {{ cowsmoo_text }} </pre>
+{% if output %}
+    <h3>Output</h3>
+    <textarea style="height: 200px; font-size:14px;">{{ output }}</textarea>
+{% endif %}
+
 
 <!-- https://www.w3schools.com/tags/tag_pre.asp -->
